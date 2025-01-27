@@ -26,11 +26,21 @@ pipeline {
                         script: "docker run -d sum-calculator",
                         returnStdout: true
                     ).trim()
+                    
+                    // Ajouter un log pour vérifier la sortie brute
+                    echo "Raw Docker Run Output: ${output}"
+                    
+                    // Vérifier si la sortie contient un ID valide
+                    if (!output || output.isEmpty()) {
+                        error "Failed to get Docker container ID. Output: ${output}"
+                    }
+                    
                     env.CONTAINER_ID = output
                     echo "Container ID: ${env.CONTAINER_ID}"
                 }
             }
         }
+
 
         stage('Test') {
             steps {
