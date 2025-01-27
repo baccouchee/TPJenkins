@@ -18,40 +18,40 @@ pipeline {
             }
         }
 
-      stage('Run') {
-    steps {
-        script {
-            echo "Running Docker container..."
-            def output = bat(
-                script: "docker run -d sum-calculator",
-                returnStdout: true
-            ).trim()
+        stage('Run') {
+            steps {
+                script {
+                    echo "Running Docker container..."
+                    def output = bat(
+                        script: "docker run -d sum-calculator",
+                        returnStdout: true
+                    ).trim()
 
-            echo "Raw Output: ${output}"
+                    echo "Raw Output: ${output}"
 
-            // Nettoyer la sortie pour extraire uniquement l'ID
-            def containerId = output.split('\n')[-1].trim()
-            
-            // Vérifier si un ID valide a été extrait
-            if (!containerId || containerId.isEmpty()) {
-                error "Failed to extract Docker container ID. Output: ${output}"
+                    // Nettoyer la sortie pour extraire uniquement l'ID
+                    def containerId = output.split('\n')[-1].trim()
+                    
+                    // Vérifier si un ID valide a été extrait
+                    if (!containerId || containerId.isEmpty()) {
+                        error "Failed to extract Docker container ID. Output: ${output}"
+                    }
+
+                    echo "Extracted Container ID: ${containerId}"
+
+                    bat(
+                        script: "docker container prune -f || true",
+                    )
+
+                    echo "Extracted Container ID: ${containerId}"
+
+                    // Explicitly set the environment variable using withEnv
+                    withEnv(["CONTAINER_ID=${containerId}"]) {
+                        echo "Container ID: ${env.CONTAINER_ID}"
+                    }
+                }
             }
-
-            echo "Extracted Container ID: ${containerId}"
-
-            bat(
-                script: "docker container prune -f || true",
-            )
-
-            echo "Extracted Container ID: ${containerId}"
-
-            // Explicitly set the environment variable
-            env.CONTAINER_ID = containerId
-            echo "Container ID: ${env.CONTAINER_ID}"
         }
-    }
-}
-
 
         stage('Test') {
             steps {
