@@ -49,6 +49,7 @@ pipeline {
                     withEnv(["CONTAINER_ID=${containerId}"]) {
                         echo "Container ID: ${env.CONTAINER_ID}"
                     }
+                    echo "Container ID: ${env.CONTAINER_ID}"
                 }
         }
 }
