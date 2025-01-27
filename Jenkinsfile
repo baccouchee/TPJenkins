@@ -18,28 +18,36 @@ pipeline {
             }
         }
 
-        stage('Run') {
-            steps {
-                script {
-                    echo "Running Docker container..."
-                    def output = bat(
-                        script: "docker run -d sum-calculator",
-                        returnStdout: true
-                    ).trim()
-                    
-                    // Ajouter un log pour vérifier la sortie brute
-                    echo "Raw Docker Run Output: ${output}"
-                    
-                    // Vérifier si la sortie contient un ID valide
-                    if (!output || output.isEmpty()) {
-                        error "Failed to get Docker container ID. Output: ${output}"
-                    }
-                    
-                    env.CONTAINER_ID = output
-                    echo "Container ID: ${env.CONTAINER_ID}"
-                }
+      stage('Run') {
+    steps {
+        script {
+            echo "Running Docker container..."
+            def output = bat(
+                script: "docker run -d sum-calculator",
+                returnStdout: true
+            ).trim()
+
+            echo "Raw Output: ${output}"
+
+            // Nettoyer la sortie pour extraire uniquement l'ID
+            def containerId = output.split('\n')[-1].trim()
+            
+            // Vérifier si un ID valide a été extrait
+            if (!containerId || containerId.isEmpty()) {
+                error "Failed to extract Docker container ID. Output: ${output}"
             }
+
+            echo "Extracted Container ID: ${containerId}"
+
+            bat(
+                script: "docker container prune -f || true",
+            )
+
+            env.CONTAINER_ID = containerId
+            echo "Container ID: ${env.CONTAINER_ID}"
         }
+    }
+}
 
 
         stage('Test') {
