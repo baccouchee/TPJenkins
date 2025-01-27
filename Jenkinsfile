@@ -43,6 +43,8 @@ pipeline {
                 script: "docker container prune -f || true",
             )
 
+            echo "Extracted Container ID: ${containerId}"
+
             // Explicitly set the environment variable
             env.CONTAINER_ID = containerId
             echo "Container ID: ${env.CONTAINER_ID}"
