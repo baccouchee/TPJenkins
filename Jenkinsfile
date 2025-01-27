@@ -45,11 +45,15 @@ pipeline {
 
                     echo "Extracted Container ID: ${containerId}"
 
-                    // Explicitly set the environment variable using withEnv
-                    withEnv(["CONTAINER_ID=${containerId}"]) {
-                        echo "Container ID: ${env.CONTAINER_ID}"
-                    }
-                    echo "Container ID: ${env.CONTAINER_ID}"
+                    // Write the containerId to a temporary file
+                    writeFile file: 'container_id.txt', text: containerId
+
+                    // Read the containerId from the temporary file
+                    def storedContainerId = readFile('container_id.txt').trim()
+
+                    echo "Stored Container ID: ${storedContainerId}"
+
+                    echo "Container ID from env after withEnv: ${env.CONTAINER_ID}"
                 }
         }
 }
