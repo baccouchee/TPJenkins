@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     echo "Running Docker container..."
-                    def output = sh(
+                    def output = bat(
                         script: "docker run -d sum-calculator",
                         returnStdout: true
                     ).trim()
@@ -43,7 +43,7 @@ pipeline {
         //                 def arg2 = vars[1]
         //                 def expectedSum = vars[2].toFloat()
 
-        //                 def output = sh(
+        //                 def output = bat(
         //                     script: "docker exec ${env.CONTAINER_ID} python /app/sum.py ${arg1} ${arg2}",
         //                     returnStdout: true
         //                 ).trim()
@@ -63,9 +63,9 @@ pipeline {
         //     steps {
         //         script {
         //             echo "Tagging and pushing image to DockerHub..."
-        //             sh "docker login -u <your-dockerhub-username> -p <your-dockerhub-password>"
-        //             sh "docker tag sum-calculator <your-dockerhub-username>/sum-calculator:latest"
-        //             sh "docker push <your-dockerhub-username>/sum-calculator:latest"
+        //             bat "docker login -u <your-dockerhub-username> -p <your-dockerhub-password>"
+        //             bat "docker tag sum-calculator <your-dockerhub-username>/sum-calculator:latest"
+        //             bat "docker push <your-dockerhub-username>/sum-calculator:latest"
         //         }
         //     }
         // }
@@ -74,8 +74,8 @@ pipeline {
     post {
         always {
             echo "Cleaning up..."
-            sh "docker stop ${env.CONTAINER_ID} || true"
-            sh "docker rm ${env.CONTAINER_ID} || true"
+            bat "docker stop ${env.CONTAINER_ID} || true"
+            bat "docker rm ${env.CONTAINER_ID} || true"
         }
     }
 }
