@@ -18,7 +18,7 @@ pipeline {
             }
         }
 
-        stage('Run') {
+      stage('Run') {
             steps {
                 script {
                     echo "Running Docker container..."
@@ -50,27 +50,28 @@ pipeline {
                         echo "Container ID: ${env.CONTAINER_ID}"
                     }
                 }
-            }
         }
+}
+
 
         stage('Test') {
             steps {
                 script {
-                    echo "Starting tests..."
-                    echo "Using Container ID: ${env.CONTAINER_ID}" // Add this line for debugging
-                    def testLines = readFile(env.TEST_FILE_PATH).split('\n')
-                    for (line in testLines) {
-                        def vars = line.split(' ')
-                        def arg1 = vars[0]
-                        def arg2 = vars[1]
-                        def expectedSum = vars[2].toFloat()
+                echo "Starting tests..."
+                echo "Using Container ID: ${env.CONTAINER_ID}" // Add this line for debugging
+                def testLines = readFile(env.TEST_FILE_PATH).split('\n')
+                for (line in testLines) {
+                    def vars = line.split(' ')
+                    def arg1 = vars[0]
+                    def arg2 = vars[1]
+                    def expectedSum = vars[2].toFloat()
 
-                        def output = bat(
-                            script: "docker exec ${env.CONTAINER_ID} python /app/sum.py ${arg1} ${arg2}",
-                            returnStdout: true
-                        ).trim()
+                    def output = bat(
+                        script: "docker exec ${env.CONTAINER_ID} python /app/sum.py ${arg1} ${arg2}",
+                        returnStdout: true
+                    ).trim()
 
-                        echo "Test Output: ${output}"
+                    echo "Test Output: ${output}"
                     }
                 }
             }
