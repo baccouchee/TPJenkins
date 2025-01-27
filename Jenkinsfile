@@ -53,29 +53,35 @@ pipeline {
         }
 }
 
-
-        stage('Test') {
-            steps {
-                script {
+    stage('Test') {
+        steps {
+            script {
                 echo "Starting tests..."
-                echo "Using Container ID: ${env.CONTAINER_ID}" // Add this line for debugging
-                def testLines = readFile(env.TEST_FILE_PATH).split('\n')
-                for (line in testLines) {
-                    def vars = line.split(' ')
-                    def arg1 = vars[0]
-                    def arg2 = vars[1]
-                    def expectedSum = vars[2].toFloat()
+                withEnv(["CONTAINER_ID=${env.CONTAINER_ID}"]) {
+                    // Récupérer l'ID du conteneur
+                    def containerId = env.CONTAINER_ID
+                    // Exécuter les tests
+                    // Pour l'exemple, nous allons exécuter un simple test de somm
 
-                    def output = bat(
-                        script: "docker exec ${env.CONTAINER_ID} python /app/sum.py ${arg1} ${arg2}",
-                        returnStdout: true
-                    ).trim()
+                    echo "Using Container ID: ${containerId}" // Add this line for debugging
+                    def testLines = readFile(env.TEST_FILE_PATH).split('\n')
+                    for (line in testLines) {
+                        def vars = line.split(' ')
+                        def arg1 = vars[0]
+                        def arg2 = vars[1]
+                        def expectedSum = vars[2].toFloat()
 
-                    echo "Test Output: ${output}"
+                        def output = bat(
+                            script: "docker exec ${env.CONTAINER_ID} python /app/sum.py ${arg1} ${arg2}",
+                            returnStdout: true
+                        ).trim()
+
+                        echo "Test Output: ${output}"
                     }
                 }
             }
         }
+    }
 
         // stage('Deploy to DockerHub') {
         //     steps {
