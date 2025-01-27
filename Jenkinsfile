@@ -68,7 +68,7 @@ pipeline {
                     for (line in testLines) {
                         def vars = line.split(' ')
                         def arg1 = vars[0]
-                        def arg2 = vars[1]
+                         def arg2 = vars[1]
                         def expectedSum = vars[2].toFloat()
 
                         def output = bat(
