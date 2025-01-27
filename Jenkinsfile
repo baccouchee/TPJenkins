@@ -53,6 +53,13 @@ pipeline {
 
                     echo "Stored Container ID: ${storedContainerId}"
 
+                    // Set the environment variable
+                    env.CONTAINER_ID = storedContainerId
+
+                    // Explicitly set the environment variable using withEnv
+                    withEnv(["CONTAINER_ID=${env.CONTAINER_ID}"]) {
+                        echo "Container ID inside withEnv: ${env.CONTAINER_ID}"
+                    }
                     echo "Container ID from env after withEnv: ${env.CONTAINER_ID}"
                 }
         }
