@@ -32,32 +32,32 @@ pipeline {
             }
         }
 
-        // stage('Test') {
-        //     steps {
-        //         script {
-        //             echo "Starting tests..."
-        //             def testLines = readFile(env.TEST_FILE_PATH).split('\n')
-        //             for (line in testLines) {
-        //                 def vars = line.split(' ')
-        //                 def arg1 = vars[0]
-        //                 def arg2 = vars[1]
-        //                 def expectedSum = vars[2].toFloat()
+        stage('Test') {
+            steps {
+                script {
+                    echo "Starting tests..."
+                    def testLines = readFile(env.TEST_FILE_PATH).split('\n')
+                    for (line in testLines) {
+                        def vars = line.split(' ')
+                        def arg1 = vars[0]
+                        def arg2 = vars[1]
+                        def expectedSum = vars[2].toFloat()
 
-        //                 def output = bat(
-        //                     script: "docker exec ${env.CONTAINER_ID} python /app/sum.py ${arg1} ${arg2}",
-        //                     returnStdout: true
-        //                 ).trim()
+                        def output = bat(
+                            script: "docker exec ${env.CONTAINER_ID} python /app/sum.py ${arg1} ${arg2}",
+                            returnStdout: true
+                        ).trim()
 
-        //                 def result = output.toFloat()
-        //                 if (result == expectedSum) {
-        //                     echo "Test passed: ${arg1} + ${arg2} = ${result}"
-        //                 } else {
-        //                     error "Test failed: ${arg1} + ${arg2} != ${result}"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+                        def result = output.toFloat()
+                        if (result == expectedSum) {
+                            echo "Test passed: ${arg1} + ${arg2} = ${result}"
+                        } else {
+                            error "Test failed: ${arg1} + ${arg2} != ${result}"
+                        }
+                    }
+                }
+            }
+        }
 
         // stage('Deploy to DockerHub') {
         //     steps {
