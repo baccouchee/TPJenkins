@@ -28,18 +28,17 @@ pipeline {
 
                     echo "Raw Output: ${output}"
 
-                    // Extraire l'ID du conteneur
-                    def containerId = output.split('\n')[0].trim()
+                    // Extraire uniquement la dernière partie de la sortie (l'ID du conteneur)
+                    def containerId = output.tokenize()[-1].trim()
 
-                    // Vérifier si un ID valide a été extrait
+                    // Vérification
                     if (!containerId || containerId.isEmpty()) {
                         error "Failed to extract Docker container ID. Output: ${output}"
                     }
 
                     echo "Extracted Container ID: ${containerId}"
-
-                    // Écrire l'ID dans un fichier pour persistance
                     writeFile file: 'container_id.txt', text: containerId
+
                 }
             }
         }
