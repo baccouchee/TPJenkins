@@ -69,15 +69,28 @@ pipeline {
                 }
             }
         }
-                stage('Deploy to DockerHub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                    bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
-                    bat "docker tag %IMAGE_NAME% %DOCKERHUB_USERNAME%/%IMAGE_NAME%:latest"
-                    bat "docker push %DOCKERHUB_USERNAME%/%IMAGE_NAME%:latest"
+stage('Deploy to DockerHub') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+            script {
+                echo "Logging into DockerHub..."
+                bat "echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin"
+
+                echo "Tagging Docker image..."
+                def imageName = env.IMAGE_NAME
+                if (!imageName || imageName.isEmpty()) {
+                    error "IMAGE_NAME is not defined!"
                 }
+
+                bat "docker tag %IMAGE_NAME% %DOCKERHUB_USERNAME%/%IMAGE_NAME%:latest"
+
+                echo "Pushing Docker image..."
+                bat "docker push %DOCKERHUB_USERNAME%/%IMAGE_NAME%:latest"
             }
         }
+    }
+}
+
     }
 
     post {
