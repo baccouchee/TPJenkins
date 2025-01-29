@@ -69,8 +69,18 @@ pipeline {
                 }
             }
         }
-    }
 
+
+        stage('Docker Login, Tag & Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                    bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
+                    bat "docker tag %IMAGE_NAME% %DOCKERHUB_USERNAME%/%IMAGE_NAME%:latest"
+                    bat "docker push %DOCKERHUB_USERNAME%/%IMAGE_NAME%:latest"
+                }
+            }
+
+    }
     post {
         always {
             echo "Cleaning up..."
