@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker image..."
-                    bat "docker build -t sum-calculator ${env.DIR_PATH}"
+                    bat "docker build -t sum ."
                 }
             }
         }
@@ -69,23 +69,21 @@ pipeline {
                 }
             }
         }
-stage('Deploy to DockerHub') {
-    steps {
-        script {
-            echo "Logging into DockerHub securely..."
-            bat "docker login -u bastimagic -p 27mai1998djerba"
+        stage('Deploy to DockerHub') {
+            steps {
+                script {
+                    echo "Logging into DockerHub securely..."
+                    bat "docker login -u bastimagic -p 27mai1998djerba"
 
-            def imageName = "sum"
-            // Correction de la commande docker tag
-            bat "docker tag sum bastimagic/sum:latest"
+                    def imageName = "sum"
+                    // Correction de la commande docker tag
+                    bat "docker tag sum bastimagic/sum:latest"
 
-            echo "Pushing Docker image..."
-            bat "docker push bastimagic/sum:latest"
+                    echo "Pushing Docker image..."
+                    bat "docker push bastimagic/sum:latest"
+                }
+            }
         }
-    }
-}
-
-
     }
 
     post {
