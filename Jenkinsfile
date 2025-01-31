@@ -70,23 +70,25 @@ pipeline {
             }
         }
 stage('Deploy to DockerHub') {
-    steps {
-        withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', 
-            usernameVariable: 'DOCKERHUB_USERNAME', 
-            passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-            script {
-                echo "Logging into DockerHub securely..."
-                bat "echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin"
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', 
+                    usernameVariable: 'DOCKERHUB_USERNAME', 
+                    passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                    script {
+                        echo "Logging into DockerHub securely..."
+                        bat "docker login -u bastimagic -p "
 
-                def imageName = "sum-calculator"
-                bat "docker tag ${imageName} %DOCKERHUB_USERNAME%/${imageName}:latest"
+                        def imageName = "sum"
+                        // Correction de la commande docker tag
+                        bat "docker tag sum bastimagic/sum:latest"
 
-                echo "Pushing Docker image..."
-                bat "docker push %DOCKERHUB_USERNAME%/${imageName}:latest"
+                        echo "Pushing Docker image..."
+                        bat "docker push bastimagic/sum:latest"
+                    }
+                }
             }
-        }
-    }
-}
+        }
+    }
 
 
     }
