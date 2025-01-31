@@ -70,25 +70,20 @@ pipeline {
             }
         }
 stage('Deploy to DockerHub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', 
-                    usernameVariable: 'DOCKERHUB_USERNAME', 
-                    passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                    script {
-                        echo "Logging into DockerHub securely..."
-                        bat "docker login -u bastimagic -p "
+    steps {
+        script {
+            echo "Logging into DockerHub securely..."
+            bat "docker login -u bastimagic -p 27mai1998djerba"
 
-                        def imageName = "sum"
-                        // Correction de la commande docker tag
-                        bat "docker tag sum bastimagic/sum:latest"
+            def imageName = "sum"
+            // Correction de la commande docker tag
+            bat "docker tag sum bastimagic/sum:latest"
 
-                        echo "Pushing Docker image..."
-                        bat "docker push bastimagic/sum:latest"
-                    }
-                }
-            }
-        }
-    }
+            echo "Pushing Docker image..."
+            bat "docker push bastimagic/sum:latest"
+        }
+    }
+}
 
 
     }
