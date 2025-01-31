@@ -73,7 +73,7 @@ pipeline {
             steps {
                 script {
                     echo "Logging into DockerHub securely..."
-                    bat "docker login -u bastimagic -p 27mai1998djerba"
+                    bat "docker login -u bastimagic -p ${env.DOCKERHUB_PASSWORD}"
 
                     def imageName = "sum"
                     // Correction de la commande docker tag
